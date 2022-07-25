@@ -1,9 +1,11 @@
 import { UUIDV4 } from "sequelize";
-import { BelongsTo, Column, DataType, Default, ForeignKey, IsUUID, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { BeforeCreate, BelongsTo, BelongsToMany, Column, DataType, Default, ForeignKey, IsUUID, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { IpAddress, UserIpAddress } from "./ip-address.model";
 import { Password } from "./password.model";
 
 @Table
 export class User extends Model {
+
     @PrimaryKey
     @Default(UUIDV4)
     @Column(DataType.UUID)
@@ -16,6 +18,9 @@ export class User extends Model {
     username: string
     @Column
     email: string
+
+
+    @Default(false)
     @Column
     emailVerified: boolean
 
@@ -25,4 +30,8 @@ export class User extends Model {
 
     @BelongsTo(() => Password, {foreignKey: "passwordId", as: "password"})
     password: Password
+
+    @BelongsToMany(() => IpAddress, () => UserIpAddress)
+    ipAddresses: User[]
+
 }
